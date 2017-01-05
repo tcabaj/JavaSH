@@ -42,7 +42,7 @@ public class Kategoria {
 	}
 	
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	public List<Film> getMedicines() {
+	public List<Film> getFilmy() {
 		return filmy;
 	}
 	public void setFilmy(List<Film> filmy) {
