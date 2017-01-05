@@ -13,5 +13,9 @@ public interface KinoM {
 	public Kategoria findKategoriabyNazwa(String nazwa);
 	public boolean editKategoria(Kategoria kategoria);
 	//Film
-	
+	Long addNewFilm(Film film);
+	List<Film> getAllFilm();
+	void deleteFilm(Film film);
+	Film findFilmById(Long id);
+	public boolean editFilm(Film film);
 }

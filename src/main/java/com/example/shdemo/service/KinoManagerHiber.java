@@ -62,6 +62,50 @@ public class KinoManagerHiber implements KinoM {
 		return true;
 	}
 
+	@Override
+	public Long addNewFilm(Film film) {
+		film.setId(null);
+		return (Long)sessionFactory.getCurrentSession().save(film);
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public List<Film> getAllFilm() {
+		return sessionFactory.getCurrentSession().getNamedQuery("film.all").list();
+	}
+
+	@Override
+	public void deleteFilm(Film film) {
+		Film _film = (Film) sessionFactory.getCurrentSession().get(Film.class, film.getId());
+		
+		List<Kategoria> kategoria = getAllKategoria();
+		for(Kategoria k : kategoria){
+			for(Film f : k.getFilmy()){
+				if(f.getId() == _film.getId()){
+					k.getFilmy().remove(f);
+					sessionFactory.getCurrentSession().update(k);
+					break;
+				}
+			}
+		}
+		sessionFactory.getCurrentSession().delete(_film);
+	}
+
+	@Override
+	public Film findFilmById(Long id) {
+		return (Film) sessionFactory.getCurrentSession().get(Film.class, id);
+	}
+
+	@Override
+	public boolean editFilm(Film film) {
+		try{
+			sessionFactory.getCurrentSession().update(film);
+		}catch(Exception e){
+			return false;
+		}
+		return true;
+	}
+
 	
 }
 
