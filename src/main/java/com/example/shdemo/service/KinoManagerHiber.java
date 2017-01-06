@@ -1,5 +1,6 @@
 package com.example.shdemo.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.SessionFactory;
@@ -104,6 +105,27 @@ public class KinoManagerHiber implements KinoM {
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public List<Film> getOwnedFilm(Kategoria kategoria) {
+		kategoria = (Kategoria) sessionFactory.getCurrentSession().get(Kategoria.class, kategoria.getId());
+		List<Film> film = new ArrayList<Film>(kategoria.getFilmy());
+		return film;
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public List<Film> getFreeFilm() {
+		return sessionFactory.getCurrentSession().getNamedQuery("film.notSold").list();
+	}
+
+	@Override
+	public void sellFilm(Long kategoriaId, Long filmId) {
+		Kategoria kategoria = (Kategoria) sessionFactory.getCurrentSession().get(Kategoria.class, kategoriaId);
+		Film film = (Film) sessionFactory.getCurrentSession().get(Film.class, filmId);
+		film.setInKategoria(true);
+		kategoria.getFilmy().add(film);
 	}
 
 	

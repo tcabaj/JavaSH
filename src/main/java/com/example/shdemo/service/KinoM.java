@@ -18,4 +18,8 @@ public interface KinoM {
 	void deleteFilm(Film film);
 	Film findFilmById(Long id);
 	public boolean editFilm(Film film);
+	
+	List<Film> getOwnedFilm(Kategoria kategoria);
+	List<Film> getFreeFilm();
+	void sellFilm(Long kategoriaId, Long filmId);
 }
