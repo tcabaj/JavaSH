@@ -18,7 +18,7 @@ import javax.persistence.OneToMany;
 @NamedQueries({
 	@NamedQuery(name = "kategoria.all", query = "Select k from Kategoria k"),
 	@NamedQuery(name = "kategoria.byId", query = "Select k from Kategoria k where k.id = :id"),
-	@NamedQuery(name = "kategoria.byNazwa", query = "Select k from Kategoria k where k.nazwa = :name")
+	@NamedQuery(name = "kategoria.byNazwa", query = "Select k from Kategoria k where k.nazwa = :nazwa")
 })
 public class Kategoria {
 	private Long id;

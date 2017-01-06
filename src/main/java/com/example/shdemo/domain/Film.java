@@ -11,20 +11,20 @@ import javax.persistence.NamedQuery;
 @NamedQueries({
 	@NamedQuery(name = "film.all", query = "Select f from Film f"),
 	@NamedQuery(name = "film.byId", query = "Select f from Film f where f.id = :id"),
-	@NamedQuery(name = "film.notSold", query = "Select f from Film f where f.inFilm = false")
+	//@NamedQuery(name = "film.notSold", query = "Select f from Film f where f.inKatrgoria = false")
 })
 public class Film {
 	private Long id;
 	private String tytul;
 	private int dlugosc;
 	private int il_miejsc;
-	private boolean inFilm = false;
+	private boolean inKatrgoria = false;
 	
-	public boolean isInFilm() {
-		return inFilm;
+	public boolean isInKategoria() {
+		return inKatrgoria;
 	}
-	public void setInFilm(boolean inFilm) {
-		this.inFilm = inFilm;
+	public void setInKategoria(boolean inKatrgoria) {
+		this.inKatrgoria = inKatrgoria;
 	}
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -49,7 +49,7 @@ public class Film {
 	public int getIlMiejsc() {
 		return il_miejsc;
 	}
-	public void setIlMIesjc(int il_miejsc) {
+	public void setilMiejsc(int il_miejsc) {
 		this.il_miejsc = il_miejsc;
 	}
 }
