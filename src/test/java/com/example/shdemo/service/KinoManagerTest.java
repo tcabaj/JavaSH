@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.shdemo.domain.Film;
 import com.example.shdemo.domain.Kategoria;
 
-
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:/beans.xml" })
 @TransactionConfiguration(transactionManager = "txManager", defaultRollback = false)
@@ -29,6 +28,7 @@ public class KinoManagerTest {
 	private final String NAZWA_1 = "Horror";
 	private final String NAZWA_2 = "Piła 3";
 	private final String NAZWA_3 = "Piła 2";
+	private final String NAZWA_4 = "Dramat";
 	private final int DLUGOSC = 124;
 	private final int IL_MIEJSC = 43;
 	private final int DLUGOSC_1 = 122;
@@ -36,6 +36,7 @@ public class KinoManagerTest {
 
 	@Before
 	public void setup(){
+		if(kinoM.findKategoriabyNazwa(NAZWA) == null){
 		Film film = new Film();
 		film.setTytul(NAZWA_2);
 		film.setDlugosc(DLUGOSC);
@@ -48,6 +49,36 @@ public class KinoManagerTest {
 		film.setInKategoria(true);
 		
 		kinoM.addKategoria(kategoria);
+		}
+		Film film1 = new Film();
+		film1.setTytul("Kac Vegas");
+		film1.setDlugosc(111);
+		film1.setilMiejsc(111);
+		film1.setInKategoria(false);
+		
+		Kategoria kategoria1 = new Kategoria();
+		kategoria1.setNazwa("Kom");
+		kategoria1.getFilmy().add(film1);
+		film1.setInKategoria(true);
+		
+		kinoM.addKategoria(kategoria1);
+	}
+	@Before
+	public void setup1(){
+		if(kinoM.findKategoriabyNazwa(NAZWA_4) == null){
+		Film film = new Film();
+		film.setTytul(NAZWA_3);
+		film.setDlugosc(DLUGOSC);
+		film.setilMiejsc(IL_MIEJSC);
+		film.setInKategoria(false);
+		
+		Kategoria kategoria = new Kategoria();
+		kategoria.setNazwa(NAZWA_4);
+		kategoria.getFilmy().add(film);
+		film.setInKategoria(true);
+		
+		kinoM.addKategoria(kategoria);
+		}
 	}
 	// KATEGORIA 
 	@Test
@@ -73,15 +104,13 @@ public class KinoManagerTest {
 	@Test
 	public void deleteKategoria(){
 		int KategoriaCount = kinoM.getAllKategoria().size();
-		int FilmCount = kinoM.getAllFilm().size();
 		
-		Kategoria kategoria = kinoM.findKategoriabyNazwa(NAZWA_1);
+		Kategoria kategoria = kinoM.findKategoriabyNazwa(NAZWA);
 		Long KategoriaId = kategoria.getId();
 		kinoM.deleteKategoria(kategoria);
 		
 		assertEquals(null, kinoM.findKategoriabyId(KategoriaId));
 		assertEquals(KategoriaCount - 1, kinoM.getAllKategoria().size());
-		assertEquals(FilmCount , kinoM.getAllFilm().size());
 	}
 	@Test
 	public void getPharmacybyId(){
@@ -93,12 +122,12 @@ public class KinoManagerTest {
 	}
 	@Test
 	public void sellFilm(){
-		Kategoria recievedKategoria = kinoM.findKategoriabyNazwa(NAZWA);
+		Kategoria recievedKategoria = kinoM.findKategoriabyNazwa("Kom");
 		int prev = recievedKategoria.getFilmy().size();
 		Film film = new Film();
-		film.setTytul(NAZWA_2);
-		film.setDlugosc(DLUGOSC);
-		film.setilMiejsc(IL_MIEJSC);
+		film.setTytul("Kac Vegas");
+		film.setDlugosc(111);
+		film.setilMiejsc(111);
 		film.setInKategoria(false);
 		
 		Long filmId = kinoM.addNewFilm(film);
@@ -108,17 +137,17 @@ public class KinoManagerTest {
 		List<Film> ownedFilm = kinoM.getOwnedFilm(recievedKategoria);
 		
 		assertEquals(prev+1, ownedFilm.size());
-		assertEquals(NAZWA_2, ownedFilm.get(0).getTytul());
-		assertEquals(DLUGOSC, ownedFilm.get(0).getDlugosc());
+		assertEquals("Kac Vegas", ownedFilm.get(0).getTytul());
+		assertEquals(111, ownedFilm.get(0).getDlugosc());
 	}
 	@Test
 	public void getOwnedFilm(){
-		Kategoria kategoria = kinoM.findKategoriabyNazwa(NAZWA);
+		Kategoria kategoria = kinoM.findKategoriabyNazwa("Kom");
 		List<Film> ownedFilm = kinoM.getOwnedFilm(kategoria);
 		
-		assertEquals(NAZWA_2, ownedFilm.get(0).getTytul());
-		assertEquals(DLUGOSC, ownedFilm.get(0).getDlugosc());
-		assertEquals(IL_MIEJSC, ownedFilm.get(0).getIlMiejsc());	
+		assertEquals("Kac Vegas", ownedFilm.get(0).getTytul());
+		assertEquals(111, ownedFilm.get(0).getDlugosc());
+		assertEquals(111, ownedFilm.get(0).getIlMiejsc());	
 	}
 	
 	
@@ -141,7 +170,7 @@ public class KinoManagerTest {
 	}
 	@Test
 	public void getFilmId(){
-		Kategoria kategoria = kinoM.findKategoriabyNazwa(NAZWA);
+		Kategoria kategoria = kinoM.findKategoriabyNazwa(NAZWA_4);
 		Film film = kategoria.getFilmy().get(0);
 		Film byId = kinoM.findFilmById(kategoria.getFilmy().get(0).getId());
 		
@@ -149,7 +178,7 @@ public class KinoManagerTest {
 	}
 	@Test
 	public void editFilm(){
-		Kategoria kategoria = kinoM.findKategoriabyNazwa(NAZWA);
+		Kategoria kategoria = kinoM.findKategoriabyNazwa(NAZWA_4);
 		Film film = kategoria.getFilmy().get(0);
 		film.setTytul("Zmiana");
 		film.setDlugosc(999);
@@ -163,6 +192,21 @@ public class KinoManagerTest {
 		assertEquals(999, kategoria2.getFilmy().get(0).getDlugosc());
 		assertEquals(999, kategoria2.getFilmy().get(0).getIlMiejsc());
 	}
-	
+	@Test
+	public void deleteFilm(){
+		int KategoriaCount = kinoM.getAllKategoria().size();
+		int FilmCount = kinoM.getAllFilm().size();
+		
+		Kategoria kategoria = kinoM.findKategoriabyNazwa(NAZWA);
+		int KategoriawFilmie = kategoria.getFilmy().size();
+		Film film = kategoria.getFilmy().get(0);
+		kinoM.deleteFilm(film);
+		
+		kategoria = kinoM.findKategoriabyNazwa(NAZWA);
+		
+		assertEquals(KategoriaCount, kinoM.getAllKategoria().size());
+		assertEquals(FilmCount - 1, kinoM.getAllFilm().size());
+		assertEquals(KategoriawFilmie - 1, kategoria.getFilmy().size());
+	}
 	
 }

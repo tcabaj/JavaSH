@@ -50,9 +50,13 @@ public class KinoManagerHiber implements KinoM {
 
 	@Override
 	public Kategoria findKategoriabyNazwa(String nazwa) {
-		return (Kategoria) sessionFactory.getCurrentSession().getNamedQuery("kategoria.byNazwa").setString("nazwa", nazwa).list().get(0);
+		List<Kategoria> kategorie =  sessionFactory.getCurrentSession().getNamedQuery("kategoria.byNazwa").setString("nazwa", nazwa).list();
+		if(kategorie.size() == 0){
+			return null;
+		}else{
+			return kategorie.get(0);
+		}
 	}
-
 	@Override
 	public boolean editKategoria(Kategoria kategoria) {
 		try{
